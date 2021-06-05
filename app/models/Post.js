@@ -6,12 +6,11 @@ module.exports = (connection) => {
   const Post = connection.define("post", {
     title: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     body: {
       type: DataTypes.STRING,
-    },
-    slug: {
-      type: DataTypes.TEXT,
+      allowNull: false,
     },
     creatorId: {
       type: DataTypes.INTEGER,

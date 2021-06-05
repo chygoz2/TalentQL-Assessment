@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize')
+const { Sequelize } = require("sequelize");
 
 const connection = new Sequelize(
   process.env.DB_NAME,
@@ -11,11 +11,10 @@ const connection = new Sequelize(
 );
 
 const db = {
-  connection
+  connection,
+  Users: require("./User.js")(connection),
+  Posts: require("./Post.js")(connection),
+  Replies: require("./Reply.js")(connection),
 };
-
-db.Users = require("./User.js")(connection);
-db.Posts = require("./Post.js")(connection);
-db.Replies = require("./Reply.js")(connection);
 
 module.exports = db;

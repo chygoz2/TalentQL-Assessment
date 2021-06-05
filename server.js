@@ -2,15 +2,20 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const db = require("./app/models");
+const StatusCodes = require("./app/constants/statusCodes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-db.connection.sync();
+db.connection.sync({ alter: true });
 
 app.get("/", (req, res) => {
-  res.send(req.query.name);
+  res.status(StatusCodes.OK).json({
+    version: "v1",
+  });
 });
+
+app.use("/api/v1/auth", require("./app/controllers/AuthController"));
 
 const PORT = process.env.SERVER_PORT || 3000;
 app.listen(PORT, () => {
