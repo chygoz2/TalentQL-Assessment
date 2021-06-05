@@ -1,7 +1,7 @@
 const { Router } = require("express");
-const bcrypt = require('bcrypt')
+const bcrypt = require("bcrypt");
 const db = require("../models");
-const { responseService } = require("../Utils");
+const { responseService, generateAccessToken } = require("../Utils");
 const statusCodes = require("../constants/statusCodes");
 const { body, validationResult } = require("express-validator");
 
@@ -43,19 +43,71 @@ router.post(
 
     const { emailAddress, password, firstName, lastName } = req.body;
 
-	
-	try {
-		const user = await db.Users.create({
-			emailAddress,
-			firstName,
-			lastName,
-			password
-		})
-	
-		return responseService(res, statusCodes.OK, "Registration successful", user);
-	} catch (error) {
-		return responseService(res, statusCodes.SERVER_ERROR, error.message);
-	}
+    try {
+      const user = await db.Users.create({
+        emailAddress,
+        firstName,
+        lastName,
+        password,
+      });
+
+      return responseService(
+        res,
+        statusCodes.OK,
+        "Registration successful",
+        user
+      );
+    } catch (error) {
+      return responseService(res, statusCodes.SERVER_ERROR, error.message);
+    }
+  }
+);
+
+router.post(
+  "/login",
+  body("emailAddress").notEmpty(),
+  body("password").notEmpty(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return responseService(
+        res,
+        statusCodes.BAD_REQUEST,
+        "Validation failed",
+        null,
+        errors.array()
+      );
+    }
+
+    const { emailAddress, password } = req.body;
+
+    try {
+      const user = await db.Users.findOne({
+        where: {
+          emailAddress,
+        },
+      });
+
+      if (!user || !(await bcrypt.compare(password, user.password))) {
+        return responseService(
+          res,
+          statusCodes.UNAUTHORIZED,
+          "Incorrect email/password"
+        );
+      }
+
+      let userJson = user.toJSON();
+      userJson.token = generateAccessToken(userJson);
+
+      return responseService(
+        res,
+        statusCodes.OK,
+        "Login successful",
+        userJson
+      );
+    } catch (error) {
+      return responseService(res, statusCodes.SERVER_ERROR, error.message);
+    }
   }
 );
 
