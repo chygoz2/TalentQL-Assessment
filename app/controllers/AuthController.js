@@ -56,7 +56,7 @@ router.post(
         password,
       });
 
-	  eventEmiiter.emit('user-registered', user)
+      eventEmiiter.emit("user-registered", user);
 
       return responseService(
         res,
@@ -194,13 +194,13 @@ router.post(
       }
 
       user.password = req.body.password;
-	  user.passwordResetToken = null;
+      user.passwordResetToken = null;
       await user.save();
 
       return responseService(
         res,
         statusCodes.OK,
-        "Password successfully reset",
+        "Password successfully reset"
       );
     } catch (error) {
       return responseService(res, statusCodes.SERVER_ERROR, error.message);

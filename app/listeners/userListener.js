@@ -1,4 +1,4 @@
-const emailSender = require("../emailSender");
+const emailSender = require("../utils/emailSender");
 
 module.exports = (eventEmiiter) => {
   eventEmiiter.on("user-registered", (user) => {
