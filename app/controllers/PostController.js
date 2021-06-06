@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const fs = require("fs");
 const db = require("../models");
 const { responseService } = require("../utils");
 const {
@@ -120,7 +121,18 @@ router.delete("/:id", authenticateToken, canEditPost, async (req, res) => {
   try {
     const post = req.post;
 
+    const images = await db.Images.findAll({
+      where: {
+        postId: req.params.id,
+      },
+    });
+
     await post.destroy();
+
+    for (let image of images) {
+      let path = `${process.cwd()}${image.filePath}`;
+      fs.unlinkSync(path);
+    }
 
     return responseService(res, statusCodes.OK, "Post deleted successfully");
   } catch (error) {
