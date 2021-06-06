@@ -81,6 +81,7 @@ router.get("/:id", authenticateToken, async (req, res) => {
 router.patch(
   "/:id",
   authenticateToken,
+  uploadFile.array("image", 5),
   canEditPost,
   body("body")
     .trim()
@@ -103,6 +104,16 @@ router.patch(
 
       post.body = req.body.body;
       await post.save();
+
+      if (req.files) {
+        for (let file of req.files) {
+          await db.Images.create({
+            postId: post.id,
+            filePath: paths.UPLOADED_IMAGES + file.filename,
+          });
+        }
+      }
+      
       await post.reload({ include: { all: true, nested: true } });
 
       return responseService(
