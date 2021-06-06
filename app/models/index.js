@@ -12,7 +12,6 @@ const connection = new Sequelize(
 );
 
 const db = {
-  connection,
   Users: require("./User.js")(connection),
   Posts: require("./Post.js")(connection),
   Replies: require("./Reply.js")(connection),
