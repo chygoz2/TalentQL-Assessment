@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const responseService = (
   res,
@@ -20,7 +21,22 @@ const generateAccessToken = (data) => {
   });
 };
 
+const generateResetToken = async (length = 48) => {
+  const promise = new Promise((resolve, reject) => {
+    crypto.randomBytes(length, function (err, buffer) {
+      if (err) {
+        return reject(err);
+      }
+      resolve(buffer.toString("hex"));
+    });
+  });
+  const token = await promise;
+  console.log(token);
+  return token;
+};
+
 module.exports = {
   responseService,
   generateAccessToken,
+  generateResetToken,
 };

@@ -1,7 +1,11 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const db = require("../models");
-const { responseService, generateAccessToken } = require("../Utils");
+const {
+  responseService,
+  generateAccessToken,
+  generateResetToken,
+} = require("../utils");
 const statusCodes = require("../constants/statusCodes");
 const { body, validationResult } = require("express-validator");
 
@@ -99,11 +103,101 @@ router.post(
       let userJson = user.toJSON();
       userJson.token = generateAccessToken(userJson);
 
+      return responseService(res, statusCodes.OK, "Login successful", userJson);
+    } catch (error) {
+      return responseService(res, statusCodes.SERVER_ERROR, error.message);
+    }
+  }
+);
+
+router.post(
+  "/forgot-password",
+  body("emailAddress").notEmpty().withMessage("Email address is required"),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return responseService(
+        res,
+        statusCodes.BAD_REQUEST,
+        "Validation failed",
+        null,
+        errors.array()
+      );
+    }
+
+    try {
+      const user = await db.Users.findOne({
+        where: {
+          emailAddress: req.body.emailAddress,
+        },
+      });
+
+      if (!user) {
+        return responseService(
+          res,
+          statusCodes.OK,
+          "User with provided email address does not exist"
+        );
+      }
+
+      const data = {
+        passwordResetToken: await generateResetToken(),
+      };
+
+      user.passwordResetToken = data.passwordResetToken;
+      await user.save();
+
       return responseService(
         res,
         statusCodes.OK,
-        "Login successful",
-        userJson
+        "Password reset token generated",
+        data
+      );
+    } catch (error) {
+      return responseService(res, statusCodes.SERVER_ERROR, error.message);
+    }
+  }
+);
+
+router.post(
+  "/reset-password/:token",
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .trim()
+    .isLength({ min: 6 })
+    .withMessage("Must be at least 6 characters long"),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return responseService(
+        res,
+        statusCodes.BAD_REQUEST,
+        "Validation failed",
+        null,
+        errors.array()
+      );
+    }
+
+    try {
+      const user = await db.Users.findOne({
+        where: {
+          passwordResetToken: req.params.token,
+        },
+      });
+
+      if (!user) {
+        return responseService(res, statusCodes.BAD_REQUEST, "Invalid token");
+      }
+
+      user.password = req.body.password;
+	  user.passwordResetToken = null;
+      await user.save();
+
+      return responseService(
+        res,
+        statusCodes.OK,
+        "Password successfully reset",
       );
     } catch (error) {
       return responseService(res, statusCodes.SERVER_ERROR, error.message);

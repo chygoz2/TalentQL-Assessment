@@ -26,6 +26,9 @@ module.exports = (connection) => {
         this.setDataValue("password", bcrypt.hashSync(value, salt));
       },
     },
+    passwordResetToken: {
+      type: DataTypes.STRING,
+    },
   });
 
   User.prototype.toJSON = function () {
