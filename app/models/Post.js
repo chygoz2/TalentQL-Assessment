@@ -3,6 +3,7 @@ const { DataTypes } = require("sequelize");
 module.exports = (connection) => {
   const User = require("./User")(connection);
   const Reply = require("./Reply")(connection);
+  const Like = require("./Like")(connection);
 
   const Post = connection.define("post", {
     body: {
@@ -19,7 +20,8 @@ module.exports = (connection) => {
     },
   });
 
-  Post.hasMany(Reply, { as: 'replies' })
+  Post.hasMany(Reply)
+  Post.hasMany(Like)
 
   return Post;
 };

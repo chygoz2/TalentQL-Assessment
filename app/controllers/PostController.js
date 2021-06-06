@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const db = require("../models");
-const { responseService, authenticateToken } = require("../Utils");
+const { responseService } = require("../utils");
+const { authenticateToken, canEditPost } = require("../middlewares");
 const statusCodes = require("../constants/statusCodes");
 const { body, validationResult } = require("express-validator");
 
@@ -41,7 +42,7 @@ router.post(
 router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const post = await db.Posts.findByPk(req.params.id, {
-      include: ["replies"],
+      include: { all: true, nested: true },
     });
 
     if (!post) {
@@ -62,6 +63,7 @@ router.get("/:id", authenticateToken, async (req, res) => {
 router.patch(
   "/:id",
   authenticateToken,
+  canEditPost,
   body("body")
     .trim()
     .isLength({ min: 1 })
@@ -79,16 +81,11 @@ router.patch(
     }
 
     try {
-      const post = await db.Posts.findByPk(req.params.id, {
-        include: db.Reply,
-      });
-
-      if (!post) {
-        return responseService(res, statusCodes.NOT_FOUND, "Post not found");
-      }
+      const post = req.post;
 
       post.body = req.body.body;
       await post.save();
+      await post.reload({ include: { all: true, nested: true } });
 
       return responseService(
         res,
@@ -102,17 +99,9 @@ router.patch(
   }
 );
 
-router.delete("/:id", authenticateToken, async (req, res) => {
+router.delete("/:id", authenticateToken, canEditPost, async (req, res) => {
   try {
-    const post = await db.Posts.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-
-    if (!post) {
-      return responseService(res, statusCodes.NOT_FOUND, "Post not found");
-    }
+    const post = req.post;
 
     await post.destroy();
 
@@ -158,7 +147,7 @@ router.post(
         postId: req.params.id,
       });
 
-      await post.reload({ include: ["replies"] });
+      await post.reload({ include: { all: true, nested: true } });
 
       return responseService(
         res,
@@ -171,5 +160,77 @@ router.post(
     }
   }
 );
+
+router.post("/:id/like", authenticateToken, async (req, res) => {
+  try {
+    const post = await db.Posts.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!post) {
+      return responseService(res, statusCodes.NOT_FOUND, "Post not found");
+    }
+
+    await db.Likes.findOrCreate({
+      where: {
+        userId: req.user.id,
+        postId: req.params.id,
+      },
+      defaults: {
+        userId: req.user.id,
+        postId: req.params.id,
+      },
+    });
+
+    await post.reload({ include: { all: true, nested: true } });
+
+    return responseService(
+      res,
+      statusCodes.OK,
+      "Post liked successfully",
+      post
+    );
+  } catch (error) {
+    return responseService(res, statusCodes.SERVER_ERROR, error.message);
+  }
+});
+
+router.post("/:id/unlike", authenticateToken, async (req, res) => {
+  try {
+    const post = await db.Posts.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if (!post) {
+      return responseService(res, statusCodes.NOT_FOUND, "Post not found");
+    }
+
+    const like = await db.Likes.findOne({
+      where: {
+        userId: req.user.id,
+        postId: req.params.id,
+      },
+    });
+
+    if (like) {
+      await like.destroy();
+    }
+
+    await post.reload({ include: { all: true, nested: true } });
+
+    return responseService(
+      res,
+      statusCodes.OK,
+      "Post unlked successfully",
+      post
+    );
+  } catch (error) {
+    return responseService(res, statusCodes.SERVER_ERROR, error.message);
+  }
+});
 
 module.exports = router;

@@ -16,6 +16,7 @@ const db = {
   Users: require("./User.js")(connection),
   Posts: require("./Post.js")(connection),
   Replies: require("./Reply.js")(connection),
+  Likes: require("./Like.js")(connection),
 };
 
 module.exports = db;

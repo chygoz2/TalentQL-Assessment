@@ -29,5 +29,6 @@ module.exports = (connection) => {
 
 //   Reply.belongsTo(Post);
   Reply.belongsTo(User);
+  
   return Reply;
 };
