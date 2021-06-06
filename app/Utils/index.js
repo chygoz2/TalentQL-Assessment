@@ -21,7 +21,7 @@ const generateAccessToken = (data) => {
   });
 };
 
-const generateResetToken = async (length = 48) => {
+const generateResetToken = async (length = 4) => {
   const promise = new Promise((resolve, reject) => {
     crypto.randomBytes(length, function (err, buffer) {
       if (err) {

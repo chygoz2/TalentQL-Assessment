@@ -273,8 +273,4 @@ router.post("/:id/unlike", authenticateToken, async (req, res) => {
   }
 });
 
-router.get("*", (req, res) => {
-  return responseService(res, statusCodes.NOT_FOUND, "Unknown route");
-});
-
 module.exports = router;

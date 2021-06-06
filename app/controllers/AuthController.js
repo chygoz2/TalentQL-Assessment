@@ -60,7 +60,7 @@ router.post(
 
       return responseService(
         res,
-        statusCodes.OK,
+        statusCodes.CREATED,
         "Registration successful",
         user
       );
@@ -138,23 +138,22 @@ router.post(
       if (!user) {
         return responseService(
           res,
-          statusCodes.OK,
+          statusCodes.FORBIDDEN,
           "User with provided email address does not exist"
         );
       }
 
-      const data = {
-        passwordResetToken: await generateResetToken(),
-      };
+      const passwordResetToken = await generateResetToken()
 
-      user.passwordResetToken = data.passwordResetToken;
+      user.passwordResetToken = passwordResetToken;
       await user.save();
+
+      eventEmiiter.emit("initiate-password-reset", user);
 
       return responseService(
         res,
         statusCodes.OK,
         "Password reset token generated",
-        data
       );
     } catch (error) {
       return responseService(res, statusCodes.SERVER_ERROR, error.message);
@@ -207,9 +206,5 @@ router.post(
     }
   }
 );
-
-router.get("*", (req, res) => {
-  return responseService(res, statusCodes.NOT_FOUND, "Unknown route");
-});
 
 module.exports = router;

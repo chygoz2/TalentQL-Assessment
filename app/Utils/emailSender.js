@@ -14,11 +14,13 @@ module.exports = {
       },
     });
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: '"Talent QL Facebook" <talentql@example.com>',
       to: data.to,
       subject: data.subject,
       html: data.html,
     });
+
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
   },
 };
