@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const db = require("../models");
 const {
@@ -7,7 +8,7 @@ const {
   generateResetToken,
 } = require("../utils");
 const statusCodes = require("../constants/statusCodes");
-const { body, validationResult } = require("express-validator");
+const eventEmiiter = require("../utils/eventBus");
 
 const router = Router();
 
@@ -54,6 +55,8 @@ router.post(
         lastName,
         password,
       });
+
+	  eventEmiiter.emit('user-registered', user)
 
       return responseService(
         res,
