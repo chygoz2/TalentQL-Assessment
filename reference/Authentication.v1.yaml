@@ -1,0 +1,295 @@
+openapi: 3.0.0
+info:
+  title: Authentication
+  version: '1.0'
+  description: 'This includes endpoints related to user account registration, login and password reset.'
+servers:
+  - url: 'http://localhost:3000/api/v1'
+paths:
+  /auth/signup:
+    post:
+      summary: ''
+      operationId: post-auth-signup
+      responses:
+        '201':
+          description: This is returned upon successful registration
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: object
+                    required:
+                      - id
+                      - emailAddress
+                      - firstName
+                      - lastName
+                      - updatedAt
+                      - createdAt
+                    properties:
+                      id:
+                        type: number
+                      emailAddress:
+                        type: string
+                        minLength: 1
+                      firstName:
+                        type: string
+                        minLength: 1
+                      lastName:
+                        type: string
+                        minLength: 1
+                      updatedAt:
+                        type: string
+                        minLength: 1
+                      createdAt:
+                        type: string
+                        minLength: 1
+                  errors:
+                    type: 'null'
+                required:
+                  - message
+                  - data
+        '400':
+          description: This is returned if one or more problems with the request payload causes the server not to honour the request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: 'null'
+                  errors:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                          minLength: 1
+                        msg:
+                          type: string
+                          minLength: 1
+                        param:
+                          type: string
+                          minLength: 1
+                        location:
+                          type: string
+                          minLength: 1
+                      required:
+                        - value
+                        - msg
+                        - param
+                        - location
+                required:
+                  - message
+                  - errors
+      description: This endpoint allows a user to create an account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                emailAddress:
+                  type: string
+                  minLength: 1
+                  description: This is the email address that the user intends to use to access the application
+                password:
+                  type: string
+                  minLength: 1
+                  description: This is the password that the user intends to use to login to their account
+                firstName:
+                  type: string
+                  minLength: 1
+                  description: The first name of the user
+                lastName:
+                  type: string
+                  minLength: 1
+                  description: The last name of the user
+              required:
+                - emailAddress
+                - password
+                - firstName
+                - lastName
+        description: This shows the format that the expected request payload should be in.
+      parameters: []
+  /auth/login:
+    post:
+      summary: ''
+      operationId: post-auth-login
+      responses:
+        '200':
+          description: Returned upon successful login
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: object
+                    required:
+                      - id
+                      - firstName
+                      - lastName
+                      - emailAddress
+                      - createdAt
+                      - updatedAt
+                      - token
+                    properties:
+                      id:
+                        type: number
+                      firstName:
+                        type: string
+                        minLength: 1
+                      lastName:
+                        type: string
+                        minLength: 1
+                      emailAddress:
+                        type: string
+                        minLength: 1
+                      passwordResetToken:
+                        type: 'null'
+                      createdAt:
+                        type: string
+                        minLength: 1
+                      updatedAt:
+                        type: string
+                        minLength: 1
+                      token:
+                        type: string
+                        minLength: 1
+                  errors: {}
+                required:
+                  - message
+                  - data
+        '400':
+          description: Returned if invalid payload causes the server to not honour the request
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: 'null'
+                  errors:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      type: object
+                      properties:
+                        msg:
+                          type: string
+                          minLength: 1
+                        param:
+                          type: string
+                          minLength: 1
+                        location:
+                          type: string
+                          minLength: 1
+                      required:
+                        - msg
+                        - param
+                        - location
+                required:
+                  - message
+                  - errors
+        '401':
+          description: Returned upon unsuccessful authentication
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                  - message
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                emailAddress:
+                  type: string
+                  minLength: 1
+                  description: Email address of the user
+                password:
+                  type: string
+                  minLength: 1
+                  description: Password of the user
+              required:
+                - emailAddress
+                - password
+        description: 'This endpoint is called when a user want to log in to the application. Upon successful authentication, a JWT token is returned with which the user can access other routes in the application.'
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      x-examples:
+        Alice Smith:
+          id: 142
+          firstName: Alice
+          lastName: Smith
+          email: alice.smith@gmail.com
+          dateOfBirth: '1997-10-31'
+          emailVerified: true
+          signUpDate: '2019-08-24'
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1997-10-31'
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        createDate:
+          type: string
+          format: date
+          description: The date that the user was created.
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+        - emailVerified
