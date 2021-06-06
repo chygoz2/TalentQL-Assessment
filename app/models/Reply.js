@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 
 module.exports = (connection) => {
   const User = require("./User")(connection);
-  const Post = require("./Post")(connection);
+//   const Post = require("./Post")(connection);
 
   const Reply = connection.define("reply", {
     body: {
@@ -12,10 +12,10 @@ module.exports = (connection) => {
     postId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Post,
-        key: "id",
-      },
+    //   references: {
+    //     model: Post,
+    //     key: "id",
+    //   },
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -27,7 +27,7 @@ module.exports = (connection) => {
     },
   });
 
-  Reply.belongsTo(Post);
+//   Reply.belongsTo(Post);
   Reply.belongsTo(User);
   return Reply;
 };

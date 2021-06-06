@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const statusCodes = require("../constants/statusCodes");
 
-const responseService = (res, statusCode, message, data, errors = null) => {
+const responseService = (res, statusCode, message, data = null, errors = null) => {
   return res.status(statusCode).json({
     message,
     data,
@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
     return responseService(
       res,
       statusCodes.UNAUTHORIZED,
-      "Unauthorized operation"
+      "Token not found"
     );
   }
 
@@ -30,7 +30,7 @@ const authenticateToken = (req, res, next) => {
     return responseService(
       res,
       statusCodes.UNAUTHORIZED,
-      "Unauthorized operation"
+      "Token not found"
     );
   }
 
@@ -38,8 +38,7 @@ const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
     if (err) {
-      console.log(err);
-      return responseService(res, statusCodes.FORBIDDEN, "Forbidden operation");
+      return responseService(res, statusCodes.FORBIDDEN, err.message);
     }
 
     req.user = user;

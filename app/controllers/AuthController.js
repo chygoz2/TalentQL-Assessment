@@ -65,8 +65,8 @@ router.post(
 
 router.post(
   "/login",
-  body("emailAddress").notEmpty(),
-  body("password").notEmpty(),
+  body("emailAddress").notEmpty().withMessage("Email address is required"),
+  body("password").notEmpty().withMessage("Password is required"),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

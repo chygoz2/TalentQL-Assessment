@@ -16,6 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/auth", require("./app/controllers/AuthController"));
+app.use("/api/v1/posts", require("./app/controllers/PostController"));
 
 const PORT = process.env.SERVER_PORT || 3000;
 app.listen(PORT, () => {
