@@ -208,4 +208,8 @@ router.post(
   }
 );
 
+router.get("*", (req, res) => {
+  return responseService(res, statusCodes.NOT_FOUND, "Unknown route");
+});
+
 module.exports = router;

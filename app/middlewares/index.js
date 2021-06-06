@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const statusCodes = require("../constants/statusCodes");
+const { responseService } = require("../utils");
 const db = require("../models");
 
 const authenticateToken = (req, res, next) => {
