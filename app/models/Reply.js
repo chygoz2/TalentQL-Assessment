@@ -15,10 +15,6 @@ module.exports = (connection) => {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: User,
-        key: "id",
-      },
     },
   });
 

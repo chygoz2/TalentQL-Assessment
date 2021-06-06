@@ -1,7 +1,7 @@
 const emailSender = require("../utils/emailSender");
 
-module.exports = (eventEmiiter) => {
-  eventEmiiter.on("user-registered", (user) => {
+module.exports = (eventEmitter) => {
+  eventEmitter.on("user-registered", (user) => {
     emailSender.send({
       to: user.emailAddress,
       subject: "Welcome to TalentQL Facebook",

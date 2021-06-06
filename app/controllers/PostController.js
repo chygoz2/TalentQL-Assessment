@@ -1,19 +1,25 @@
 const { Router } = require("express");
 const db = require("../models");
 const { responseService } = require("../utils");
-const { authenticateToken, canEditPost } = require("../middlewares");
+const {
+  authenticateToken,
+  canEditPost,
+  uploadFile,
+} = require("../middlewares");
 const statusCodes = require("../constants/statusCodes");
 const { body, validationResult } = require("express-validator");
+const paths = require("../constants/paths");
 
 const router = Router();
 
 router.post(
   "/",
   authenticateToken,
+  uploadFile.array("image", 5),
   body("body")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Must be at least 1 character long"),
+    .withMessage("Post must be at least 1 character long"),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -31,6 +37,17 @@ router.post(
         body: req.body.body,
         creatorId: req.user.id,
       });
+
+      if (req.files) {
+        for (let file of req.files) {
+          await db.Images.create({
+            postId: post.id,
+            filePath: paths.UPLOADED_IMAGES + file.filename,
+          });
+        }
+      }
+
+      await post.reload({ include: { all: true, nested: true } });
 
       return responseService(res, statusCodes.CREATED, "Post saved", post);
     } catch (error) {
@@ -67,7 +84,7 @@ router.patch(
   body("body")
     .trim()
     .isLength({ min: 1 })
-    .withMessage("Must be at least 1 character long"),
+    .withMessage("Post must be at least 1 character long"),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

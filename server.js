@@ -6,6 +6,7 @@ const { responseService } = require("./app/utils");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 
 app.get("/", (req, res) => {
   return responseService(res, statusCodes.OK, "OK", {
