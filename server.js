@@ -4,6 +4,7 @@ const app = express();
 const statusCodes = require("./app/constants/statusCodes");
 const { responseService } = require("./app/utils");
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
@@ -24,6 +25,9 @@ app.all("*", (req, res) => {
 });
 
 const PORT = process.env.SERVER_PORT || 3000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log("Server is running on port: " + PORT);
 });
+
+module.exports = app;
+module.exports.server = server;

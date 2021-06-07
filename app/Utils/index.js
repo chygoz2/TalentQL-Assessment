@@ -31,7 +31,6 @@ const generateResetToken = async (length = 4) => {
     });
   });
   const token = await promise;
-  console.log(token);
   return token;
 };
 

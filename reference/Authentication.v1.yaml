@@ -113,8 +113,8 @@ paths:
                   description: This is the email address that the user intends to use to access the application
                 password:
                   type: string
-                  minLength: 1
                   description: This is the password that the user intends to use to login to their account
+                  minLength: 6
                 firstName:
                   type: string
                   minLength: 1
@@ -419,8 +419,8 @@ paths:
               properties:
                 password:
                   type: string
-                  minLength: 1
                   description: The new password that the user wants to use
+                  minLength: 6
               required:
                 - password
     parameters:

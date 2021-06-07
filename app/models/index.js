@@ -1,17 +1,20 @@
 const { Sequelize } = require("sequelize");
+const config = require('../../config/config')[process.env.NODE_ENV]
 
 const connection = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  config.database,
+  config.username,
+  config.password,
   {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: "mysql",
+    host: config.host,
+    port: config.port,
+    dialect: config.dialect,
+    logging: false
   }
 );
 
 const db = {
+  connection,
   Users: require("./User.js")(connection),
   Posts: require("./Post.js")(connection),
   Replies: require("./Reply.js")(connection),
