@@ -124,6 +124,21 @@ paths:
                 required:
                   - message
                   - errors
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
         '500':
           description: Returned if a server error occurs
           content:
@@ -174,6 +189,21 @@ paths:
       summary: Get post
       tags: []
       responses:
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
         '200':
           description: Returned on successful GET operation
           content:
@@ -359,6 +389,21 @@ paths:
       summary: Edit post
       tags: []
       responses:
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
         '200':
           description: Returned on successful update operation
           content:
@@ -584,6 +629,21 @@ paths:
       summary: Delete a post
       operationId: delete-posts-id
       responses:
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
         '200':
           description: Returned on successful post deletion
           content:
