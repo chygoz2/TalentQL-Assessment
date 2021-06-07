@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: replies.v1
+  version: '1.0'
+  contact:
+    name: Chigozie Ekwonu
+    email: chygoz2@gmail.com
+  description: 'This includes endpoints related to creating, viewing, editing and deleting a replies'
+servers:
+  - url: 'http://localhost:3000/api/v1'
+paths:
+  /replies/:
+    post:
+      summary: Post reply
+      operationId: post-user
+      responses:
+        '201':
+          description: Returned on successful reply submission
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      body:
+                        type: string
+                        minLength: 1
+                      userId:
+                        type: number
+                      postId:
+                        type: number
+                      updatedAt:
+                        type: string
+                        minLength: 1
+                      createdAt:
+                        type: string
+                        minLength: 1
+                    required:
+                      - id
+                      - body
+                      - userId
+                      - postId
+                      - updatedAt
+                      - createdAt
+                  errors: {}
+                required:
+                  - message
+                  - data
+              examples: {}
+        '400':
+          description: Returned when a validation error occurs
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - value
+                        - msg
+                        - param
+                        - location
+                      properties:
+                        value:
+                          type: string
+                        msg:
+                          type: string
+                          minLength: 1
+                        param:
+                          type: string
+                          minLength: 1
+                        location:
+                          type: string
+                          minLength: 1
+                required:
+                  - message
+                  - errors
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '500':
+          description: Returned if a server error occurs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: The content of the reply
+                postId:
+                  type: integer
+                  description: The id of the post to be replied to
+              required:
+                - body
+            examples: {}
+        description: Post the necessary fields for the API to reply to a post
+      description: Reply to a post
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: JWT of the logged in user as a Bearer token. The JWT is gotten upon successful user login
+    parameters: []
+components:
+  schemas: {}

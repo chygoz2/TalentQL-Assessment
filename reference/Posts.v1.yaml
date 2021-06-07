@@ -168,7 +168,7 @@ paths:
               required:
                 - body
             examples: {}
-        description: Post the necessary fields for the API to create a new user.
+        description: Post the necessary fields for the API to create a new post.
       description: Create a new post
       parameters:
         - schema:
@@ -189,21 +189,6 @@ paths:
       summary: Get post
       tags: []
       responses:
-        '401':
-          description: Returned if JWT is not specified or is invalid
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                properties:
-                  message:
-                    type: string
-                    minLength: 1
-                  data: {}
-                  errors: {}
-                required:
-                  - message
         '200':
           description: Returned on successful GET operation
           content:
@@ -348,6 +333,21 @@ paths:
                 required:
                   - message
                   - data
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
         '404':
           description: Returned if a post with the given id does not exist
           content:
@@ -389,21 +389,6 @@ paths:
       summary: Edit post
       tags: []
       responses:
-        '401':
-          description: Returned if JWT is not specified or is invalid
-          content:
-            application/json:
-              schema:
-                description: ''
-                type: object
-                properties:
-                  message:
-                    type: string
-                    minLength: 1
-                  data: {}
-                  errors: {}
-                required:
-                  - message
         '200':
           description: Returned on successful update operation
           content:
@@ -561,6 +546,21 @@ paths:
                     type: 'null'
                   errors:
                     type: 'null'
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
         '403':
           description: Returned when a user attempts to edit a post that was created by another user
           content:
@@ -629,8 +629,8 @@ paths:
       summary: Delete a post
       operationId: delete-posts-id
       responses:
-        '401':
-          description: Returned if JWT is not specified or is invalid
+        '200':
+          description: Returned on successful post deletion
           content:
             application/json:
               schema:
@@ -644,8 +644,8 @@ paths:
                   errors: {}
                 required:
                   - message
-        '200':
-          description: Returned on successful post deletion
+        '401':
+          description: Returned if JWT is not specified or is invalid
           content:
             application/json:
               schema:

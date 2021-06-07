@@ -38,21 +38,17 @@ router.post(
     }
 
     try {
-      const post = await db.Posts.findByPk(req.body.postId);
-
-      await db.Replies.create({
+      const reply = await db.Replies.create({
         body: req.body.body,
         userId: req.user.id,
         postId: req.body.postId,
       });
 
-      await post.reload({ include: { all: true, nested: true } });
-
       return responseService(
         res,
         statusCodes.CREATED,
         "Reply saved successfully",
-        post
+        reply
       );
     } catch (error) {
       return responseService(res, statusCodes.SERVER_ERROR, error.message);
