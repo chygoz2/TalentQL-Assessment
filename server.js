@@ -16,6 +16,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", require("./app/controllers/AuthController"));
 app.use("/api/v1/posts", require("./app/controllers/PostController"));
+app.use("/api/v1/replies", require("./app/controllers/ReplyController"));
+app.use("/api/v1/likes", require("./app/controllers/LikeController"));
 
 app.all("*", (req, res) => {
   return responseService(res, statusCodes.NOT_FOUND, "Unknown route");

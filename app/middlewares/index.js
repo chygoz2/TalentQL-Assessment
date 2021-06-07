@@ -51,6 +51,29 @@ const canEditPost = async (req, res, next) => {
   }
 };
 
+const canUnlikePost = async (req, res, next) => {
+  try {
+    const like = await db.Likes.findByPk(req.params.id);
+
+    if (!like) {
+      return responseService(res, statusCodes.NOT_FOUND, "Like not found");
+    }
+
+    if (req.user.id != like.userId) {
+      return responseService(
+        res,
+        statusCodes.FORBIDDEN,
+        "Action is unauthorized"
+      );
+    }
+
+    req.like = like;
+    next();
+  } catch (error) {
+    return responseService(res, statusCodes.SERVER_ERROR, error.message);
+  }
+};
+
 const imageFilter = (req, file, next) => {
   if (!file) {
     next();
@@ -76,5 +99,6 @@ const uploadFile = multer({ storage: storage, fileFilter: imageFilter });
 module.exports = {
   authenticateToken,
   canEditPost,
+  canUnlikePost,
   uploadFile,
 };
