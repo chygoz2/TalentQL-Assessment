@@ -47,7 +47,7 @@ router.post(
 
       return responseService(
         res,
-        statusCodes.OK,
+        statusCodes.CREATED,
         "Post liked successfully",
         like
       );

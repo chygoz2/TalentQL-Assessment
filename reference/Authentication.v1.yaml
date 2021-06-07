@@ -13,7 +13,7 @@ servers:
 paths:
   /auth/signup:
     post:
-      summary: ''
+      summary: Create an account
       operationId: post-auth-signup
       responses:
         '201':
@@ -132,7 +132,7 @@ paths:
       parameters: []
   /auth/login:
     post:
-      summary: ''
+      summary: Login via email and password
       operationId: post-auth-login
       responses:
         '200':
@@ -179,6 +179,7 @@ paths:
                       token:
                         type: string
                         minLength: 1
+                        description: This is the JWT which should be passed along in the header of requests to authenticate the user.
                   errors: {}
                 required:
                   - message
@@ -258,7 +259,7 @@ paths:
       description: 'This endpoint is called when a user want to log in to the application. Upon successful authentication, a JWT token is returned with which the user can access other routes in the application.'
   /auth/forgot-password:
     post:
-      summary: ''
+      summary: Forgot password
       operationId: post-auth-forgot-password
       responses:
         '200':
@@ -347,7 +348,7 @@ paths:
                 - emailAddress
   '/auth/reset-password/{token}':
     post:
-      summary: ''
+      summary: Reset password
       operationId: post-auth-reset-password
       responses:
         '200':
@@ -430,46 +431,5 @@ paths:
         required: true
         description: The password reset token the user received via email
 components:
-  schemas:
-    User:
-      title: User
-      type: object
-      description: ''
-      x-examples:
-        Alice Smith:
-          id: 142
-          firstName: Alice
-          lastName: Smith
-          email: alice.smith@gmail.com
-          dateOfBirth: '1997-10-31'
-          emailVerified: true
-          signUpDate: '2019-08-24'
-      properties:
-        id:
-          type: integer
-          description: Unique identifier for the given user.
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-          format: email
-        dateOfBirth:
-          type: string
-          format: date
-          example: '1997-10-31'
-        emailVerified:
-          type: boolean
-          description: Set to true if the user's email has been verified.
-        createDate:
-          type: string
-          format: date
-          description: The date that the user was created.
-      required:
-        - id
-        - firstName
-        - lastName
-        - email
-        - emailVerified
+  schemas: {}
   securitySchemes: {}

@@ -1,0 +1,656 @@
+openapi: 3.0.0
+info:
+  title: Posts.v1
+  version: '1.0'
+  contact:
+    name: Chigozie Ekwonu
+    email: chygoz2@gmail.com
+  description: 'This includes endpoints related to creating, viewing, editing and deleting a posts'
+servers:
+  - url: 'http://localhost:3000/api/v1'
+paths:
+  /posts/:
+    post:
+      summary: Create new post
+      operationId: post-user
+      responses:
+        '201':
+          description: Returned on successful POST creation
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: object
+                    required:
+                      - id
+                      - body
+                      - creatorId
+                      - createdAt
+                      - updatedAt
+                      - replies
+                    properties:
+                      id:
+                        type: number
+                      body:
+                        type: string
+                        minLength: 1
+                      creatorId:
+                        type: number
+                      createdAt:
+                        type: string
+                        minLength: 1
+                      updatedAt:
+                        type: string
+                        minLength: 1
+                      replies:
+                        type: array
+                        items:
+                          type: object
+                      likes:
+                        type: array
+                        items:
+                          type: object
+                      images:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            postId:
+                              type: number
+                            filePath:
+                              type: string
+                              minLength: 1
+                            createdAt:
+                              type: string
+                              minLength: 1
+                            updatedAt:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - postId
+                            - filePath
+                            - createdAt
+                            - updatedAt
+                  errors: {}
+                required:
+                  - message
+                  - data
+              examples: {}
+        '400':
+          description: Returned when a validation error occurs
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - value
+                        - msg
+                        - param
+                        - location
+                      properties:
+                        value:
+                          type: string
+                        msg:
+                          type: string
+                          minLength: 1
+                        param:
+                          type: string
+                          minLength: 1
+                        location:
+                          type: string
+                          minLength: 1
+                required:
+                  - message
+                  - errors
+        '500':
+          description: Returned if a server error occurs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: The content of the post
+                image:
+                  type: array
+                  description: An array containing uploaded files
+                  items: {}
+              required:
+                - body
+            examples: {}
+        description: Post the necessary fields for the API to create a new user.
+      description: Create a new post
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: JWT of the logged in user as a Bearer token. The JWT is gotten upon successful user login
+    parameters: []
+  '/posts/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Id of the post to be fetched or edited or deleted
+    get:
+      summary: Get post
+      tags: []
+      responses:
+        '200':
+          description: Returned on successful GET operation
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: object
+                    required:
+                      - id
+                      - body
+                      - creatorId
+                      - createdAt
+                      - updatedAt
+                    properties:
+                      id:
+                        type: number
+                      body:
+                        type: string
+                        minLength: 1
+                      creatorId:
+                        type: number
+                      createdAt:
+                        type: string
+                        minLength: 1
+                      updatedAt:
+                        type: string
+                        minLength: 1
+                      replies:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            body:
+                              type: string
+                              minLength: 1
+                            postId:
+                              type: number
+                            userId:
+                              type: number
+                            createdAt:
+                              type: string
+                              minLength: 1
+                            updatedAt:
+                              type: string
+                              minLength: 1
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: number
+                                firstName:
+                                  type: string
+                                  minLength: 1
+                                lastName:
+                                  type: string
+                                  minLength: 1
+                                emailAddress:
+                                  type: string
+                                  minLength: 1
+                                createdAt:
+                                  type: string
+                                  minLength: 1
+                                updatedAt:
+                                  type: string
+                                  minLength: 1
+                              required:
+                                - id
+                                - firstName
+                                - lastName
+                                - emailAddress
+                                - createdAt
+                                - updatedAt
+                          required:
+                            - id
+                            - body
+                            - postId
+                            - userId
+                            - createdAt
+                            - updatedAt
+                      likes:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            postId:
+                              type: number
+                            userId:
+                              type: number
+                            createdAt:
+                              type: string
+                              minLength: 1
+                            updatedAt:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - postId
+                            - userId
+                            - createdAt
+                            - updatedAt
+                      images:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            postId:
+                              type: number
+                            filePath:
+                              type: string
+                              minLength: 1
+                            createdAt:
+                              type: string
+                              minLength: 1
+                            updatedAt:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - postId
+                            - filePath
+                            - createdAt
+                            - updatedAt
+                  errors: {}
+                required:
+                  - message
+                  - data
+        '404':
+          description: Returned if a post with the given id does not exist
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '500':
+          description: Returned if a server error occurs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+      operationId: get-posts-id
+      description: This returns a post with the specified ID
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: JWT of the logged in user as a Bearer token. The JWT is gotten upon successful user login
+          required: true
+    patch:
+      summary: Edit post
+      tags: []
+      responses:
+        '200':
+          description: Returned on successful update operation
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data:
+                    type: object
+                    required:
+                      - id
+                      - body
+                      - creatorId
+                      - createdAt
+                      - updatedAt
+                    properties:
+                      id:
+                        type: number
+                      body:
+                        type: string
+                        minLength: 1
+                      creatorId:
+                        type: number
+                      createdAt:
+                        type: string
+                        minLength: 1
+                      updatedAt:
+                        type: string
+                        minLength: 1
+                      replies:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            body:
+                              type: string
+                              minLength: 1
+                            postId:
+                              type: number
+                            userId:
+                              type: number
+                            createdAt:
+                              type: string
+                              minLength: 1
+                            updatedAt:
+                              type: string
+                              minLength: 1
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: number
+                                firstName:
+                                  type: string
+                                  minLength: 1
+                                lastName:
+                                  type: string
+                                  minLength: 1
+                                emailAddress:
+                                  type: string
+                                  minLength: 1
+                                createdAt:
+                                  type: string
+                                  minLength: 1
+                                updatedAt:
+                                  type: string
+                                  minLength: 1
+                              required:
+                                - id
+                                - firstName
+                                - lastName
+                                - emailAddress
+                                - createdAt
+                                - updatedAt
+                          required:
+                            - id
+                            - body
+                            - postId
+                            - userId
+                            - createdAt
+                            - updatedAt
+                      likes:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            postId:
+                              type: number
+                            userId:
+                              type: number
+                            createdAt:
+                              type: string
+                              minLength: 1
+                            updatedAt:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - postId
+                            - userId
+                            - createdAt
+                            - updatedAt
+                      images:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            postId:
+                              type: number
+                            filePath:
+                              type: string
+                              minLength: 1
+                            createdAt:
+                              type: string
+                              minLength: 1
+                            updatedAt:
+                              type: string
+                              minLength: 1
+                          required:
+                            - id
+                            - postId
+                            - filePath
+                            - createdAt
+                            - updatedAt
+                  errors: {}
+                required:
+                  - message
+                  - data
+        '400':
+          description: Returned on invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+        '403':
+          description: Returned when a user attempts to edit a post that was created by another user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+        '404':
+          description: Returned if a post with the given id does not exist
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '500':
+          description: Returned if a server error occurs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+      operationId: get-posts-id
+      description: This updates a post with the specified ID
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: JWT of the logged in user as a Bearer token. The JWT is gotten upon successful user login
+          required: true
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  description: The content of the post
+                image:
+                  type: string
+                  description: An array containing uploaded files
+              required:
+                - body
+    delete:
+      summary: Delete a post
+      operationId: delete-posts-id
+      responses:
+        '200':
+          description: Returned on successful post deletion
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '403':
+          description: Returned if an attempt is made by a user to delete post created by another user
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '404':
+          description: Returned if the post with the given id is not found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '500':
+          description: Returned on Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+      description: This deletes the post with the given id
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: JWT of the logged in user as a Bearer token. The JWT is gotten upon successful user login
+          required: true
+components:
+  schemas: {}

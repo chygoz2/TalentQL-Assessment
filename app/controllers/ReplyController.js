@@ -50,7 +50,7 @@ router.post(
 
       return responseService(
         res,
-        statusCodes.OK,
+        statusCodes.CREATED,
         "Reply saved successfully",
         post
       );
