@@ -15,7 +15,7 @@ paths:
       operationId: post-user
       responses:
         '201':
-          description: Returned on successful POST creation
+          description: Returned on successful post creation
           content:
             application/json:
               schema:

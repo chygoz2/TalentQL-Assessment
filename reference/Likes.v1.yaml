@@ -1,0 +1,224 @@
+openapi: 3.0.0
+info:
+  title: likes.v1
+  version: '1.0'
+  contact:
+    name: Chigozie Ekwonu
+    email: chygoz2@gmail.com
+  description: This includes endpoints related to creating and deleting post likes
+servers:
+  - url: 'http://localhost:3000/api/v1'
+paths:
+  /likes/:
+    post:
+      summary: Like
+      operationId: post-user
+      responses:
+        '201':
+          description: Returned on successful like of a post
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  id:
+                    type: number
+                  postId:
+                    type: number
+                  userId:
+                    type: number
+                  createdAt:
+                    type: string
+                  updatedAt:
+                    type: string
+                required:
+                  - id
+                  - postId
+                  - userId
+                  - createdAt
+                  - updatedAt
+              examples: {}
+        '400':
+          description: Returned when a validation error occurs
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      required:
+                        - value
+                        - msg
+                        - param
+                        - location
+                      properties:
+                        value:
+                          type: string
+                        msg:
+                          type: string
+                          minLength: 1
+                        param:
+                          type: string
+                          minLength: 1
+                        location:
+                          type: string
+                          minLength: 1
+                required:
+                  - message
+                  - errors
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '500':
+          description: Returned if a server error occurs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                postId:
+                  type: integer
+                  description: The content of the post
+              required:
+                - postId
+            examples: {}
+        description: Post the necessary fields for the API to like a post
+      description: Like a post
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: JWT of the logged in user as a Bearer token. The JWT is gotten upon successful user login
+    parameters: []
+  '/likes/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: Id of the post to be fetched or edited or deleted
+    delete:
+      summary: Delete a post
+      operationId: delete-likes-id
+      responses:
+        '200':
+          description: Returned on successful like deletion
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '401':
+          description: Returned if JWT is not specified or is invalid
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '403':
+          description: Returned if an attempt is made by a user to delete a like created by another user
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '404':
+          description: Returned if the like with the given id is not found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+        '500':
+          description: Returned on Internal Server Error
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  message:
+                    type: string
+                    minLength: 1
+                  data: {}
+                  errors: {}
+                required:
+                  - message
+      description: This deletes the post like with the given id
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: JWT of the logged in user as a Bearer token. The JWT is gotten upon successful user login
+          required: true
+components:
+  schemas: {}

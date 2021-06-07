@@ -5,7 +5,7 @@ info:
   contact:
     name: Chigozie Ekwonu
     email: chygoz2@gmail.com
-  description: 'This includes endpoints related to creating, viewing, editing and deleting a replies'
+  description: This includes endpoints related to creating replies
 servers:
   - url: 'http://localhost:3000/api/v1'
 paths:
