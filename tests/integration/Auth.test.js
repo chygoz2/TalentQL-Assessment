@@ -112,7 +112,7 @@ describe("Auth Controller", () => {
     });
   });
 
-  describe("/api/v1/auth/reset-password/{token}", () => {
+  describe("/api/v1/auth/reset-password/:token", () => {
     it("should allow password change", async () => {
       const email = "mickey@example.com";
 

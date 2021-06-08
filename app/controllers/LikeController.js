@@ -49,7 +49,7 @@ router.post(
         res,
         statusCodes.CREATED,
         "Post liked successfully",
-        like
+        like[0]
       );
     } catch (error) {
       return responseService(res, statusCodes.SERVER_ERROR, error.message);

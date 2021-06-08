@@ -22,22 +22,29 @@ paths:
                 description: ''
                 type: object
                 properties:
-                  id:
-                    type: number
-                  postId:
-                    type: number
-                  userId:
-                    type: number
-                  createdAt:
+                  message:
                     type: string
-                  updatedAt:
-                    type: string
-                required:
-                  - id
-                  - postId
-                  - userId
-                  - createdAt
-                  - updatedAt
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      postId:
+                        type: number
+                      userId:
+                        type: number
+                      createdAt:
+                        type: string
+                      updatedAt:
+                        type: string
+                    required:
+                      - id
+                      - postId
+                      - userId
+                      - createdAt
+                      - updatedAt
+                  errors:
+                    nullable: true
               examples: {}
         '400':
           description: Returned when a validation error occurs
