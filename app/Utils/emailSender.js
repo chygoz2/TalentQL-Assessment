@@ -2,6 +2,10 @@ const nodemailer = require("nodemailer");
 
 module.exports = {
   send: async (data) => {
+    if (process.env.NODE_ENV == "test") {
+      return;
+    }
+    
     let testAccount = await nodemailer.createTestAccount();
 
     let transporter = nodemailer.createTransport({
