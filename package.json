@@ -9,7 +9,7 @@
     "pretest": "cross-env NODE_ENV=test yarn db:reset",
     "db:reset": "npx sequelize-cli db:drop && npx sequelize-cli db:create && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --seeders-path ./seeders/test",
     "dev": "cross-env NODE_ENV=development nodemon server.js",
-    "start": "node server.js"
+    "start": "cross-env NODE_ENV=development node server.js"
   },
   "author": "Chigozie Ekwonu",
   "license": "ISC",
