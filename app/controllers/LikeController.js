@@ -14,6 +14,9 @@ const doesPostExist = async (postId) => {
   }
 };
 
+/**
+ * This endpoint allows liking of a post
+ */
 router.post(
   "/",
   authenticateToken,
@@ -57,6 +60,9 @@ router.post(
   }
 );
 
+/**
+ * This endpoint allows unliking of a post
+ */
 router.delete("/:id", authenticateToken, canUnlikePost, async (req, res) => {
   try {
     const like = req.like

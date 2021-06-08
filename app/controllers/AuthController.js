@@ -19,21 +19,24 @@ const doesEmailExist = async (email) => {
   }
 };
 
+/**
+ * This endpoint allows registration of a user
+ */
 router.post(
   "/signup",
   body("emailAddress").isEmail().custom(doesEmailExist),
   body("password")
     .trim()
     .isLength({ min: 6 })
-    .withMessage("Must be at least 6 characters long"),
+    .withMessage("Password must be at least 6 characters long"),
   body("firstName")
     .trim()
     .isLength({ min: 2 })
-    .withMessage("Must be at least 2 characters long"),
+    .withMessage("First name must be at least 2 characters long"),
   body("lastName")
     .trim()
     .isLength({ min: 2 })
-    .withMessage("Must be at least 2 characters long"),
+    .withMessage("Last name must be at least 2 characters long"),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -70,6 +73,9 @@ router.post(
   }
 );
 
+/**
+ * This endpoint allows a user to login using an email and a password
+ */
 router.post(
   "/login",
   body("emailAddress").notEmpty().withMessage("Email address is required"),
@@ -113,6 +119,10 @@ router.post(
   }
 );
 
+/**
+ * This endpoint allows a user initiate a password reset if they 
+ * forget their password
+ */
 router.post(
   "/forgot-password",
   body("emailAddress").notEmpty().withMessage("Email address is required"),
@@ -161,6 +171,10 @@ router.post(
   }
 );
 
+/**
+ * This endpoint allows a user set a new password once in possession 
+ * of a valid password reset token
+ */
 router.post(
   "/reset-password/:token",
   body("password")
@@ -168,7 +182,7 @@ router.post(
     .withMessage("Password is required")
     .trim()
     .isLength({ min: 6 })
-    .withMessage("Must be at least 6 characters long"),
+    .withMessage("Password must be at least 6 characters long"),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

@@ -139,7 +139,7 @@ describe("Auth Controller", () => {
       expect(res.body.message).to.equal("Password successfully reset");
     });
 
-	it("Password should not be less than six characters long", async () => {
+	it("cannot use the same password reset token more than once", async () => {
 		const email = "mickey@example.com";
   
 		let res = await chai
@@ -158,12 +158,49 @@ describe("Auth Controller", () => {
 		  .request(app)
 		  .post("/api/v1/auth/reset-password/" + user.passwordResetToken)
 		  .send({
-			password: "98765",
+			password: "987654",
+		  });
+  
+		res.should.have.status(statusCodes.OK);
+		expect(res.body.message).to.equal("Password successfully reset");
+
+		res = await chai
+		  .request(app)
+		  .post("/api/v1/auth/reset-password/" + user.passwordResetToken)
+		  .send({
+			password: "987654",
 		  });
   
 		res.should.have.status(statusCodes.BAD_REQUEST);
-		expect(res.body.errors[0].msg).to.equal("Must be at least 6 characters long");
 	  });
+
+    it("Password should not be less than six characters long", async () => {
+      const email = "mickey@example.com";
+
+      let res = await chai
+        .request(app)
+        .post("/api/v1/auth/forgot-password")
+        .send({
+          emailAddress: email,
+        });
+
+      res.should.have.status(statusCodes.OK);
+      const user = await db.Users.findOne({
+        where: { emailAddress: email },
+      });
+
+      res = await chai
+        .request(app)
+        .post("/api/v1/auth/reset-password/" + user.passwordResetToken)
+        .send({
+          password: "98765",
+        });
+
+      res.should.have.status(statusCodes.BAD_REQUEST);
+      expect(res.body.errors[0].msg).to.equal(
+        "Password must be at least 6 characters long"
+      );
+    });
   });
 
   after(() => {

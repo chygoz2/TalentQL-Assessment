@@ -14,6 +14,9 @@ const doesPostExist = async (postId) => {
   }
 };
 
+/**
+ * This endpoint allows replying to a post
+ */
 router.post(
   "/",
   authenticateToken,

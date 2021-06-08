@@ -13,6 +13,9 @@ const paths = require("../constants/paths");
 
 const router = Router();
 
+/**
+ * This endpoint allows creation of new post
+ */
 router.post(
   "/",
   authenticateToken,
@@ -57,6 +60,9 @@ router.post(
   }
 );
 
+/**
+ * This endpoint allows fetching of a single post
+ */
 router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const post = await db.Posts.findByPk(req.params.id, {
@@ -78,6 +84,9 @@ router.get("/:id", authenticateToken, async (req, res) => {
   }
 });
 
+/**
+ * This endpoint allows editing of a post
+ */
 router.patch(
   "/:id",
   authenticateToken,
@@ -128,6 +137,9 @@ router.patch(
   }
 );
 
+/**
+ * This endpoint allows deletion of a post
+ */
 router.delete("/:id", authenticateToken, canEditPost, async (req, res) => {
   try {
     const post = req.post;
